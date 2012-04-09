@@ -32,6 +32,7 @@
 #include <boost/function.hpp>
 #include <iostream>
 #include <vector>
+#include <stdio.h>
 
 namespace uhd{ namespace transport{ namespace sph{
 
@@ -56,6 +57,12 @@ public:
         _next_packet_seq(0)
     {
         this->resize(size);
+        _fout = fopen("packets.out", "w");
+    }
+
+    ~send_packet_handler()
+    {
+        fclose(_fout);
     }
 
     //! Resize the number of transport channels
@@ -141,6 +148,8 @@ public:
         if_packet_info.tsf     = boost::uint64_t(metadata.time_spec.get_tick_count(_tick_rate));
         if_packet_info.sob     = metadata.start_of_burst;
         if_packet_info.eob     = metadata.end_of_burst;
+//        std::cerr << " timestamp=" << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks"
+//                  << " samples=" << nsamps_per_buff << "\n";
 
         if (nsamps_per_buff <= _max_samples_per_packet){
 
@@ -177,6 +186,8 @@ public:
             const time_spec_t time_spec = metadata.time_spec + time_spec_t(0, total_num_samps_sent, _samp_rate);
             if_packet_info.tsi = boost::uint32_t(time_spec.get_full_secs());
             if_packet_info.tsf = boost::uint64_t(time_spec.get_tick_count(_tick_rate));
+//            std::cerr << i << "/" << num_fragments << ": total_num_samps_sent=" << total_num_samps_sent << " timestamp="
+//                      << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks" << "\n";
             if_packet_info.sob = false;
 
         }
@@ -206,6 +217,7 @@ private:
     size_t _max_samples_per_packet;
     std::vector<const void *> _zero_buffs;
     size_t _next_packet_seq;
+    FILE *_fout;
 
     /*******************************************************************
      * Send a single packet:
@@ -239,6 +251,7 @@ private:
 
             //copy-convert the samples into the send buffer
             _converter->conv(_io_buffs, otw_mem, nsamps_per_buff);
+            fwrite(otw_mem, if_packet_info.num_payload_bytes, 1, _fout);
 
             //commit the samples to the zero-copy interface
             size_t num_bytes_total = (_header_offset_words32+if_packet_info.num_packet_words32)*sizeof(boost::uint32_t);

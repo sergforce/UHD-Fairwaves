@@ -91,12 +91,15 @@ public:
     uhd::meta_range_t get_host_rates(void){
         meta_range_t range;
         for (int rate = 512; rate > 256; rate -= 4){
+            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
         for (int rate = 256; rate > 128; rate -= 2){
+            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
         for (int rate = 128; rate >= int(std::ceil(_tick_rate/_link_rate)); rate -= 1){
+            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
         return range;
@@ -124,6 +127,8 @@ public:
         double rate_cubed = std::pow(double(interp & 0xff), 3);
         const boost::int16_t scale = boost::math::iround((4096*std::pow(2, ceil_log2(rate_cubed)))/(1.65*rate_cubed));
         _iface->poke32(REG_DSP_TX_SCALE_IQ, (boost::uint32_t(scale) << 16) | (boost::uint32_t(scale) << 0));
+
+        std::cerr << "set_host_rate(rate=" << rate << "): _tick_rate=" << _tick_rate << " hb0=" << hb0 << " hb1=" << hb1 << " interp=" << interp << " scale=" << scale << " return=" << _tick_rate/interp_rate << "\n";
 
         return _tick_rate/interp_rate;
     }

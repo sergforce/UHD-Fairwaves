@@ -28,6 +28,7 @@
 #include <complex>
 #include <csignal>
 #include <cmath>
+#include <stdio.h>
 
 namespace po = boost::program_options;
 
@@ -86,7 +87,8 @@ private:
 /***********************************************************************
  * Main function
  **********************************************************************/
-int UHD_SAFE_MAIN(int argc, char *argv[]){
+//int UHD_SAFE_MAIN(int argc, char *argv[]){
+int main(int argc, char *argv[]){
     uhd::set_thread_priority_safe();
 
     //variables to be set by po
@@ -189,6 +191,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     //pre-compute the waveform values
     const wave_table_class wave_table(wave_type, ampl);
     const size_t step = boost::math::iround(wave_freq/usrp->get_tx_rate() * wave_table_len);
+    std::cerr << "waveform step=" << step << " wave_freq=" << wave_freq << " tx_rate=" << usrp->get_tx_rate() << " wave_table_len=" << wave_table_len << "\n";
     size_t index = 0;
 
     //create a transmit streamer
@@ -239,10 +242,14 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
     std::cout << "Press Ctrl + C to stop streaming..." << std::endl;
 
     //send data until the signal handler gets called
-    while(not stop_signal_called){
+    FILE *fout = fopen("data.out", "w");
+    int cnt=1.3e6;
+    while(not stop_signal_called && cnt>0){
         //fill the buffer with the waveform
-        for (size_t n = 0; n < buff.size(); n++){
+        for (size_t n = 0; n < buff.size() && cnt > 0; n++, cnt--){
             buff[n] = wave_table(index += step);
+            fprintf(fout, "%f %f\n", buff[n].real(), buff[n].imag());
+//            std::clog << buff[n] << "\n";
         }
 
         //send the entire contents of the buffer
@@ -251,6 +258,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
         md.start_of_burst = false;
         md.has_time_spec = false;
     }
+    fclose(fout);
 
     //send a mini EOB packet
     md.end_of_burst = true;
