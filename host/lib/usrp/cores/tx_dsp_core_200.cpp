@@ -102,7 +102,7 @@ public:
 //            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
-        UHD_MSG(fastpath) << "get_host_rates: max rate = " << range.stop() << std::endl;
+        std::cerr << "get_host_rates: max rate = " << range.stop() << std::endl;
         return range;
     }
 
