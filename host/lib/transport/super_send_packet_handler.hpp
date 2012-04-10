@@ -252,7 +252,7 @@ private:
 
             //copy-convert the samples into the send buffer
             _converter->conv(_io_buffs, otw_mem, nsamps_per_buff);
-            fwrite(otw_mem, if_packet_info.num_payload_bytes, 1, _fout);
+//            fwrite(otw_mem, if_packet_info.num_payload_bytes, 1, _fout);
 
             //commit the samples to the zero-copy interface
             size_t num_bytes_total = (_header_offset_words32+if_packet_info.num_packet_words32)*sizeof(boost::uint32_t);

@@ -248,7 +248,7 @@ int main(int argc, char *argv[]){
         //fill the buffer with the waveform
         for (size_t n = 0; n < buff.size() && cnt > 0; n++, cnt--){
             buff[n] = wave_table(index += step);
-            fprintf(fout, "%f %f\n", buff[n].real(), buff[n].imag());
+//            fprintf(fout, "%f %f\n", buff[n].real(), buff[n].imag());
 //            std::clog << buff[n] << "\n";
         }
 
