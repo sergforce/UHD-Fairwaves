@@ -99,9 +99,10 @@ public:
             range.push_back(range_t(_tick_rate/rate));
         }
         for (int rate = 128; rate >= int(std::ceil(_tick_rate/_link_rate)); rate -= 1){
-            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
+//            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
+        UHD_MSG(fastpath) << "get_host_rates: max rate = " << range.stop() << std::endl;
         return range;
     }
 
