@@ -91,11 +91,11 @@ public:
     uhd::meta_range_t get_host_rates(void){
         meta_range_t range;
         for (int rate = 512; rate > 256; rate -= 4){
-            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
+//            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
         for (int rate = 256; rate > 128; rate -= 2){
-            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
+//            std::cerr << "get_host_rates: " << _tick_rate/rate << "\n";
             range.push_back(range_t(_tick_rate/rate));
         }
         for (int rate = 128; rate >= int(std::ceil(_tick_rate/_link_rate)); rate -= 1){

@@ -186,8 +186,8 @@ public:
             const time_spec_t time_spec = metadata.time_spec + time_spec_t(0, total_num_samps_sent, _samp_rate);
             if_packet_info.tsi = boost::uint32_t(time_spec.get_full_secs());
             if_packet_info.tsf = boost::uint64_t(time_spec.get_tick_count(_tick_rate));
-//            std::cerr << i << "/" << num_fragments << ": total_num_samps_sent=" << total_num_samps_sent << " timestamp="
-//                      << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks" << "\n";
+            std::cerr << i << "/" << num_fragments << ": total_num_samps_sent=" << total_num_samps_sent << " timestamp="
+                      << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks" << "\n";
             if_packet_info.sob = false;
 
         }
