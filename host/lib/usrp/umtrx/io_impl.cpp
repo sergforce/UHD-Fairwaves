@@ -134,6 +134,7 @@ void umtrx_impl::io_impl::recv_pirate_loop(
                                   << " has_time_spec " << metadata.has_time_spec
                                   << " time_spec " << if_packet_info.tsi << "." << if_packet_info.tsf << " sec " << metadata.time_spec.get_tick_count(tick_rate) << " ticks"
                                   << " event_code " << metadata.event_code
+                                  << " (seq=" << (metadata.event_code == 0)?uhd::ntohx(fc_word32):"" << ")"
                                   << std::endl;
                 if (metadata.event_code == 0){
                     boost::uint32_t fc_word32 = (vrt_hdr + if_packet_info.num_header_words32)[1];
