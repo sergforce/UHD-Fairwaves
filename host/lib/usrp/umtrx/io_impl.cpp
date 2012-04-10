@@ -130,6 +130,11 @@ void umtrx_impl::io_impl::recv_pirate_loop(
                 metadata.event_code = async_metadata_t::event_code_t(sph::get_context_code(vrt_hdr, if_packet_info));
 
                 //catch the flow control packets and react
+                UHD_MSG(fastpath) << "pirate loop: async_metadata channel " << metadata.channel
+                                  << " has_time_spec " << metadata.has_time_spec
+                                  << " time_spec " << metadata.time_spec
+                                  << " event_code " << metadata.event_code
+                                  << std::endl;
                 if (metadata.event_code == 0){
                     boost::uint32_t fc_word32 = (vrt_hdr + if_packet_info.num_header_words32)[1];
                     fc_mon.update_fc_condition(uhd::ntohx(fc_word32));
