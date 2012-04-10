@@ -132,7 +132,7 @@ void umtrx_impl::io_impl::recv_pirate_loop(
                 //catch the flow control packets and react
                 UHD_MSG(fastpath) << "pirate loop: async_metadata channel " << metadata.channel
                                   << " has_time_spec " << metadata.has_time_spec
-                                  << " time_spec " << if_packet_info.tsi << "." << if_packet_info.tsf << " sec " << metadata.time_spec.get_tick_count(tick_rate) << " ticks"
+                                  << " time_spec " << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks"
                                   << " event_code " << metadata.event_code
                                   << std::endl;
                 if (metadata.event_code == 0){
