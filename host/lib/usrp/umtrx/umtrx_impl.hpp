@@ -115,7 +115,7 @@ private:
     void set_rx_fe_corrections(const std::string &mb, const double);
     void set_tx_fe_corrections(const std::string &mb, const double);
 
-    double get_master_clock_rate() const { return 13e6; }
+    double get_master_clock_rate() const { return 104e6; }
 
     //device properties interface
     uhd::property_tree::sptr get_tree(void) const{
