@@ -246,9 +246,11 @@ int main(int argc, char *argv[]){
     //send data until the signal handler gets called
     FILE *fout = fopen("data.out", "w");
     int cnt=1.3e6;
+    std::cerr << std::setiosflags(std::ios::fixed) << uhd::time_spec_t::get_system_time().get_real_secs() << ": "
+              << index/step << " samples sent, " << index/wave_table_len << " sines sent" << std::endl;
     while(not stop_signal_called && cnt>0){
         //fill the buffer with the waveform
-        for (size_t n = 0; n < buff.size() && cnt > 0; n++, cnt--){
+        for (size_t n = 0; n < buff.size() && cnt > 0; n++/*, cnt--*/){
             buff[n] = wave_table(index += step);
 //            fprintf(fout, "%f %f\n", buff[n].real(), buff[n].imag());
 //            std::clog << buff[n] << "\n";
@@ -256,6 +258,8 @@ int main(int argc, char *argv[]){
 
         //send the entire contents of the buffer
         tx_stream->send(buffs, buff.size(), md);
+        std::cerr << std::setiosflags(std::ios::fixed) << uhd::time_spec_t::get_system_time().get_real_secs() << ": "
+                  << index/step << " samples sent, " << index/wave_table_len << " sines sent" << std::endl;
 
         md.start_of_burst = false;
         md.has_time_spec = false;
