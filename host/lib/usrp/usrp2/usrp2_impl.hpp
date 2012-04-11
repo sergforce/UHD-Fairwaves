@@ -57,6 +57,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
+#include <iostream>
 #include <iomanip>
 
 static const double USRP2_LINK_RATE_BPS = 1000e6/8;
@@ -380,8 +381,8 @@ public:
      * \return the sequence to be sent to the dsp
      */
     UHD_INLINE seq_type get_curr_seq_out(void){
-        UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
-                          << "flow_control_monitor::get_curr_seq_out(): " << _last_seq_out << std::endl;
+//        UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
+//                          << "flow_control_monitor::get_curr_seq_out(): " << _last_seq_out << std::endl;
         return _last_seq_out++;
     }
 
@@ -393,14 +394,14 @@ public:
     UHD_INLINE bool check_fc_condition(double timeout){
         boost::mutex::scoped_lock lock(_fc_mutex);
         if (this->ready()) {
-            UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
-                              << "flow_control_monitor::check_fc_condition(): ready() = true\n";
+//            UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
+//                              << "flow_control_monitor::check_fc_condition(): ready() = true\n";
             return true;
         }
         boost::this_thread::disable_interruption di; //disable because the wait can throw
         bool res = _fc_cond.timed_wait(lock, to_time_dur(timeout), _ready_fcn);
-        UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
-                          << "flow_control_monitor::check_fc_condition(): _fc_cond = " << res << std::endl;
+//        UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
+//                          << "flow_control_monitor::check_fc_condition(): _fc_cond = " << res << std::endl;
         return res;
     }
 
@@ -411,8 +412,8 @@ public:
     UHD_INLINE void update_fc_condition(seq_type seq){
         boost::mutex::scoped_lock lock(_fc_mutex);
         _last_seq_ack = seq;
-        UHD_MSG(fastpath) << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
-                          << "flow_control_monitor::update_fc_condition(): _last_seq_ack = " << _last_seq_ack << std::endl;
+//        std::cout << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
+//                          << "flow_control_monitor::update_fc_condition(): _last_seq_ack = " << _last_seq_ack << std::endl;
         lock.unlock();
         _fc_cond.notify_one();
     }

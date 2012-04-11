@@ -149,11 +149,11 @@ public:
         if_packet_info.tsf     = boost::uint64_t(metadata.time_spec.get_tick_count(_tick_rate));
         if_packet_info.sob     = metadata.start_of_burst;
         if_packet_info.eob     = metadata.end_of_burst;
-        std::cerr << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
-                  << "super_send_packet_handler::send() "
-                  << " has_time_spec=" << metadata.has_time_spec
-                  << " timestamp=" << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks"
-                  << " samples=" << nsamps_per_buff << "\n";
+//        std::cerr << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
+//                  << "super_send_packet_handler::send()"
+//                  << " has_time_spec=" << metadata.has_time_spec
+//                  << " timestamp=" << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks"
+//                  << " samples=" << nsamps_per_buff << "\n";
 
         if (nsamps_per_buff <= _max_samples_per_packet){
 
@@ -190,9 +190,10 @@ public:
             const time_spec_t time_spec = metadata.time_spec + time_spec_t(0, total_num_samps_sent, _samp_rate);
             if_packet_info.tsi = boost::uint32_t(time_spec.get_full_secs());
             if_packet_info.tsf = boost::uint64_t(time_spec.get_tick_count(_tick_rate));
-            std::cerr << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
-                      << i << "/" << num_fragments << ": total_num_samps_sent=" << total_num_samps_sent << " timestamp="
-                      << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks" << "\n";
+//            std::cerr << std::setiosflags(std::ios::fixed) << time_spec_t::get_system_time().get_real_secs() << ": "
+//                      << " seq=" << _next_packet_seq
+//                      << " " << i << "/" << num_fragments << ": total_num_samps_sent=" << total_num_samps_sent << " timestamp="
+//                      << if_packet_info.tsi << " sec " << if_packet_info.tsf << " ticks" << "\n";
             if_packet_info.sob = false;
 
         }
