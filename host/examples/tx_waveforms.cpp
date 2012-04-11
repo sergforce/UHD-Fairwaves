@@ -215,8 +215,10 @@ int main(int argc, char *argv[]){
     md.time_spec = usrp->get_time_now();
     md.time_spec += uhd::time_spec_t(0.1);
 
+    std::cout << (boost::format("Current device timestamp = %.6f") % usrp->get_time_now().get_real_secs()) << std::endl;
     std::cout << boost::format("Setting device timestamp to 0...") << std::endl;
     usrp->set_time_now(uhd::time_spec_t(0.0));
+    std::cout << (boost::format("Current device timestamp = %.6f") % usrp->get_time_now().get_real_secs()) << std::endl;
 
     //Check Ref and LO Lock detect
     std::vector<std::string> sensor_names;
