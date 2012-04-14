@@ -411,6 +411,47 @@ def lms_auto_calibration(lms_dev, ref_clock, lpf_bandwidth_code):
     lms_set_vga1gain(lms_dev, vga1gain)
     lms_set_vga2gain(lms_dev, vga2gain)
 
+def lms_enable_bb_loopback(lms_dev, loopback_type):
+    if loopback_type == "LPFIN":
+        # 6 - LBEN_LPFIN: BB loopback enable. If =1, TX BB loopback signal is connected to
+        #   RXLPF input. If enabled, RXTIA should be disabled (powered down)
+        lms_dev.reg_set_bits(0x08, (1 << 6))
+    elif loopback_type == "VGA2IN":
+        # 5 - LBEN_VGA2IN: BB loopback enable. If =1, TX BB loopback signal is connected to
+        #   RXVGA2 input. If enabled, LPF should be disabled (powered down).
+        lms_dev.reg_set_bits(0x08, (1 << 5))
+    elif loopback_type == "OPIN":
+        # 1 - EN : RXVGA2 modules enable
+        #   0 - RXVGA2 modules powered down
+        #   1 - RXVGA2 modules enabled (default)
+        lms_dev.reg_clear_bits(0x64, (1 << 1))
+        # 4 - LBEN_OPIN: BB loopback enable. If =1, TX BB loopback signal is connected to the
+        #   RX output pins. If enabled, RXLPF and RXVGA2 should be disabled (powered down)
+        lms_dev.reg_set_bits(0x08, (1 << 4))
+    else:
+        return False
+    # LOOPBBEN[1:0]: Base band loop back switches control
+    #   11 - Switch closed
+    lms_dev.reg_set_bits(0x46, (3 << 2))
+    return True
+
+def lms_disable_bb_loopback(lms_dev):
+    # LOOPBBEN[1:0]: Base band loop back switches control
+    #   00 - Switch open
+    lms_dev.reg_clear_bits(0x46, (3 << 2))
+    # 6 - LBEN_LPFIN: BB loopback enable. If =1, TX BB loopback signal is connected to
+    #   RXLPF input. If enabled, RXTIA should be disabled (powered down)
+    # 5 - LBEN_VGA2IN: BB loopback enable. If =1, TX BB loopback signal is connected to
+    #   RXVGA2 input. If enabled, LPF should be disabled (powered down).
+    # 4 - LBEN_OPIN: BB loopback enable. If =1, TX BB loopback signal is connected to the
+    #   RX output pins. If enabled, RXLPF and RXVGA2 should be disabled (powered down)
+    lms_dev.reg_clear_bits(0x08, (1 << 4) | (1 << 5) | (1 << 6))
+    # 1 - EN : RXVGA2 modules enable
+    #   0 - RXVGA2 modules powered down
+    #   1 - RXVGA2 modules enabled (default)
+    lms_dev.reg_set_bits(0x64, (1 << 1))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'UmTRX LMS debugging tool.', epilog = "UmTRX is detected via broadcast unless explicit address is specified via --umtrx-addr option. 'None' returned while reading\writing indicates error in the process.")
     parser.add_argument('--version', action='version', version='%(prog)s 3.1')
