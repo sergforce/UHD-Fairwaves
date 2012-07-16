@@ -534,6 +534,8 @@ module u2plus_umtrx
 		     .adc_ovf_b_1		(1'b0),
 		     .adc_on_b_1		(),
 		     .adc_oe_b_1		(),
+		     .dac1_a		(dac_a_int2),
+		     .dac1_b		(dac_b_int2),
 `endif // !`ifndef LMS602D_FRONTEND
 		     .dac_a		(dac_a_int1),
 		     .dac_b		(dac_b_int1),
